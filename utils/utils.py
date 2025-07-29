@@ -15,3 +15,5 @@ def to_var(x, volatile=False):
 def mkdir(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
+
+
