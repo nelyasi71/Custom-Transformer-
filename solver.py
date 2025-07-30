@@ -72,16 +72,16 @@ class Solver(object):
         self.train_loader = get_loader_segment(self.data_path, batch_size=self.batch_size, win_size=self.win_size,
                                                mode='train',
                                                dataset=self.dataset,
-                                               drop_last=True,test_label=self.test_label)
+                                               drop_last=True,test_labels=self.test_labels)
         self.vali_loader = get_loader_segment(self.data_path, batch_size=self.batch_size, win_size=self.win_size,
                                               mode='val',
-                                              dataset=self.dataset,drop_last=True ,test_label=self.test_label)
+                                              dataset=self.dataset,drop_last=True ,test_labels=self.test_labels)
         self.test_loader = get_loader_segment(self.data_path, batch_size=self.batch_size, win_size=self.win_size,
                                               mode='test',
-                                              dataset=self.dataset,drop_last=True ,test_label=self.test_label)
+                                              dataset=self.dataset,drop_last=True ,test_labels=self.test_labels)
         self.thre_loader = get_loader_segment(self.data_path, batch_size=self.batch_size, win_size=self.win_size,
                                               mode='thre',
-                                              dataset=self.dataset,drop_last=True ,test_label=self.test_label)
+                                              dataset=self.dataset,drop_last=True ,test_label=self.test_labels)
 
         self.build_model()
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
