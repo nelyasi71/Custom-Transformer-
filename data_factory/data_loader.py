@@ -270,6 +270,6 @@ def get_loader_segment(data_path, batch_size, win_size=100, step=100, mode='trai
                              batch_size=batch_size,
                              shuffle=False,
                              num_workers=0,
-                             drop_last=True,
+                            #  drop_last=True,
                              )
     return data_loader
