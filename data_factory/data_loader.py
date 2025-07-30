@@ -240,7 +240,7 @@ class MYDATASegLoader(object):
         elif (self.mode == 'val'):
             return np.float32(self.val[index:index + self.win_size]), np.float32(self.test_labels[index:index:self.win_size - 1])
         elif (self.mode == 'test'):
-             if idx + self.win_size > len(self.data):
+             if index + self.win_size > len(self.data):
         # Return dummy or raise error
                  return np.zeros((self.win_size, self.input_c)), -1 
              return np.float32(self.test[index:index + self.win_size]), np.float32(
