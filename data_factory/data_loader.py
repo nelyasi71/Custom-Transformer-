@@ -236,12 +236,15 @@ class MYDATASegLoader(object):
     def __getitem__(self, index):
         index = index * self.step
         if self.mode == "train":
-            return np.float32(self.train[index:index + self.win_size]), np.float32(self.test_labels[index:index:self.win_size])
+            return np.float32(self.train[index:index + self.win_size]), np.float32(self.test_labels[index:index:self.win_size - 1])
         elif (self.mode == 'val'):
-            return np.float32(self.val[index:index + self.win_size]), np.float32(self.test_labels[index:index:self.win_size])
+            return np.float32(self.val[index:index + self.win_size]), np.float32(self.test_labels[index:index:self.win_size - 1])
         elif (self.mode == 'test'):
-            return np.float32(self.test[index:index + self.win_size]), np.float32(
-                self.test_labels[index:index + self.win_size])
+             if idx + self.win_size > len(self.data):
+        # Return dummy or raise error
+                 return np.zeros((self.win_size, self.input_c)), -1 
+             return np.float32(self.test[index:index + self.win_size]), np.float32(
+                self.test_labels[index:index + self.win_size -1])
         else:
             return np.float32(self.test[
                               index // self.step * self.win_size:index // self.step * self.win_size + self.win_size]), np.float32(
