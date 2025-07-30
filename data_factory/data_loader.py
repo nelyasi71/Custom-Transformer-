@@ -200,7 +200,7 @@ class SMDSegLoader(object):
 
 
 class MYDATASegLoader(object):
-    def __init__(self, data_path, win_size, step, mode="train",test_label='test_label.csv'):
+    def __init__(self, data_path, win_size, step, mode="train",test_label='defult3'):
         self.mode = mode
         self.step = step
         self.win_size = win_size
@@ -248,7 +248,7 @@ class MYDATASegLoader(object):
                               index // self.step * self.win_size:index // self.step * self.win_size + self.win_size]), np.float32(
                 self.test_labels[index // self.step * self.win_size:index // self.step * self.win_size + self.win_size])
                               
-def get_loader_segment(data_path, batch_size, win_size=100, step=100, mode='train', dataset='KDD',drop_last=True,test_label='test_label.csv'):
+def get_loader_segment(data_path, batch_size, win_size=100, step=100, mode='train', dataset='KDD',drop_last=True,test_label='defult2'):
     if (dataset == 'SMD'):
         dataset = SMDSegLoader(data_path, win_size, step, mode)
     elif (dataset == 'MSL'):
