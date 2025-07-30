@@ -233,22 +233,22 @@ class MYDATASegLoader(object):
 
         return (data_len.shape[0] - self.win_size) // self.step + 1
 
-    def __getitem__(self, index):
-        index = index * self.step
-        if self.mode == "train":
-            return np.float32(self.train[index:index + self.win_size]), np.float32(self.test_labels[index:index:self.win_size - 1])
-        elif (self.mode == 'val'):
-            return np.float32(self.val[index:index + self.win_size]), np.float32(self.test_labels[index:index:self.win_size - 1])
-        elif (self.mode == 'test'):
-             if index + self.win_size > len(self.test):
-        # Return dummy or raise error
-                 return np.zeros((self.win_size, self.input_c)), -1 
-             return np.float32(self.test[index:index + self.win_size]), np.float32(
-                self.test_labels[index:index + self.win_size -1])
-        else:
-            return np.float32(self.test[
-                              index // self.step * self.win_size:index // self.step * self.win_size + self.win_size]), np.float32(
-                self.test_labels[index // self.step * self.win_size:index // self.step * self.win_size + self.win_size])
+    # def __getitem__(self, index):
+    #     index = index * self.step
+    #     if self.mode == "train":
+    #         return np.float32(self.train[index:index + self.win_size]), np.float32(self.test_labels[index:index:self.win_size - 1])
+    #     elif (self.mode == 'val'):
+    #         return np.float32(self.val[index:index + self.win_size]), np.float32(self.test_labels[index:index:self.win_size - 1])
+    #     elif (self.mode == 'test'):
+    #          if index + self.win_size > len(self.test):
+    #     # Return dummy or raise error
+    #              return np.zeros((self.win_size, self.input_c)), -1 
+    #          return np.float32(self.test[index:index + self.win_size]), np.float32(
+    #             self.test_labels[index:index + self.win_size -1])
+    #     else:
+    #         return np.float32(self.test[
+    #                           index // self.step * self.win_size:index // self.step * self.win_size + self.win_size]), np.float32(
+    #             self.test_labels[index // self.step * self.win_size:index // self.step * self.win_size + self.win_size])
                               
 def get_loader_segment(data_path, batch_size, win_size=100, step=100, mode='train', dataset='KDD',drop_last=True):
     if (dataset == 'SMD'):
