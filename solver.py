@@ -328,6 +328,8 @@ class Solver(object):
             test_labels.append(labels)
 
         test_inputs = np.concatenate(test_inputs, axis=0)
+        test_inputs = test_inputs.reshape(-1, test_inputs.shape[-1])
+
         attens_energy = np.concatenate(attens_energy, axis=0).reshape(-1)
         test_labels = np.concatenate(test_labels, axis=0).reshape(-1)
         test_energy = np.array(attens_energy)
