@@ -200,11 +200,12 @@ class SMDSegLoader(object):
 
 
 class MYDATASegLoader(object):
-    def __init__(self, data_path, win_size, step, mode="train"):
+    def __init__(self, data_path, win_size, step, mode="train",test_labels='test_label.csv'):
         self.mode = mode
         self.step = step
         self.win_size = win_size
         self.scaler = StandardScaler()
+        self.test_labels = test_labels
         # data = np.load(os.path.join(data_path, "MYDATA_train.npy"))
         data = pd.read_csv(data_path + '/train.csv')
 
@@ -217,7 +218,7 @@ class MYDATASegLoader(object):
         self.test = self.scaler.transform(test_data)
 
         # self.test_labels = np.load(os.path.join(data_path, "MYDATA_test_label.npy"))
-        self.test_labels = pd.read_csv(data_path + '/test_label.csv').values[:, 1:]
+        self.test_labels = pd.read_csv(data_path + '/' + test_labels).values[:, 1:]
 
         self.val = self.test
 
@@ -247,7 +248,7 @@ class MYDATASegLoader(object):
                               index // self.step * self.win_size:index // self.step * self.win_size + self.win_size]), np.float32(
                 self.test_labels[index // self.step * self.win_size:index // self.step * self.win_size + self.win_size])
                               
-def get_loader_segment(data_path, batch_size, win_size=100, step=100, mode='train', dataset='KDD',drop_last=True):
+def get_loader_segment(data_path, batch_size, win_size=100, step=100, mode='train', dataset='KDD',drop_last=True,test_labels='test_label.csv'):
     if (dataset == 'SMD'):
         dataset = SMDSegLoader(data_path, win_size, step, mode)
     elif (dataset == 'MSL'):
@@ -257,7 +258,7 @@ def get_loader_segment(data_path, batch_size, win_size=100, step=100, mode='trai
     elif (dataset == 'PSM'):
         dataset = PSMSegLoader(data_path, win_size, 1, mode)
     elif (dataset == 'MYDATA'):
-      dataset = MYDATASegLoader(data_path, win_size, step, mode)
+      dataset = MYDATASegLoader(data_path, win_size, step, mode,test_labels)
 
     shuffle = False
     if mode == 'train':
