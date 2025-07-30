@@ -242,10 +242,10 @@ class MYDATASegLoader(object):
         elif (self.mode == 'test'):
             return np.float32(self.test[index:index + self.win_size]), np.float32(
                 self.test_labels[index:index + self.win_size])
-        # else:
-        #     return np.float32(self.test[
-        #                       index // self.step * self.win_size:index // self.step * self.win_size + self.win_size]), np.float32(
-        #         self.test_labels[index // self.step * self.win_size:index // self.step * self.win_size + self.win_size])
+        else:
+            return np.float32(self.test[
+                              index // self.step * self.win_size:index // self.step * self.win_size + self.win_size]), np.float32(
+                self.test_labels[index // self.step * self.win_size:index // self.step * self.win_size + self.win_size])
                               
 def get_loader_segment(data_path, batch_size, win_size=100, step=100, mode='train', dataset='KDD',drop_last=True):
     if (dataset == 'SMD'):
