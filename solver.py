@@ -7,7 +7,6 @@ import time
 from utils.utils import *
 from model.AnomalyTransformer import AnomalyTransformer
 from data_factory.data_loader import get_loader_segment
-from sklearn.metrics import confusion_matrix
 
 
 def my_kl_loss(p, q):
@@ -206,7 +205,7 @@ class Solver(object):
                 break
             adjust_learning_rate(self.optimizer, epoch + 1, self.lr)
 
-    def test(   self):
+    def test(self):
         self.model.load_state_dict(
             torch.load(
                 os.path.join(str(self.model_save_path), str(self.dataset) + '_checkpoint.pth')))
@@ -216,7 +215,6 @@ class Solver(object):
         print("======================TEST MODE======================")
 
         criterion = nn.MSELoss(reduce=False)
-        test_inputs = []  # store original sequences
 
         # (1) stastic on the train set
         attens_energy = []
@@ -248,12 +246,6 @@ class Solver(object):
             cri = metric * loss
             cri = cri.detach().cpu().numpy()
             attens_energy.append(cri)
-            
-            test_inputs.append(input_data.detach().cpu().numpy())
-            test_labels.append(labels)
-        test_inputs = np.concatenate(test_inputs, axis=0)
-        test_labels = np.concatenate(test_labels, axis=0).reshape(-1)
-        pred = (test_energy > thresh).astype(int)
 
         attens_energy = np.concatenate(attens_energy, axis=0).reshape(-1)
         train_energy = np.array(attens_energy)
@@ -343,20 +335,7 @@ class Solver(object):
 
         print("pred:   ", pred.shape)
         print("gt:     ", gt.shape)
-        # Step: Analyze false negatives (actual = 1, predicted = 0)
-        false_negatives_idx = np.where((gt == 1) & (pred == 0))[0]
-        print(f"False Negatives: {len(false_negatives_idx)}")
-        
-        # Optional: Save or examine corresponding anomaly scores
-        fn_scores = test_energy[false_negatives_idx]
-        print("False Negative Scores (top 10):", sorted(fn_scores)[-10:])
-        
-        # Optional: Save or inspect corresponding inputs (you need to store them in test_inputs earlier!)
-        if 'test_inputs' in locals():
-            false_negatives = test_inputs[false_negatives_idx]
-            print("Sample false negative input (reshaped):")
-            print(false_negatives[0])
-        
+
         # detection adjustment: please see this issue for more information https://github.com/thuml/Anomaly-Transformer/issues/14
         anomaly_state = False
         for i in range(len(gt)):
@@ -393,16 +372,5 @@ class Solver(object):
             "Accuracy : {:0.4f}, Precision : {:0.4f}, Recall : {:0.4f}, F-score : {:0.4f} ".format(
                 accuracy, precision,
                 recall, f_score))
-        # Compute confusion matrix
-        cm = confusion_matrix(gt, pred)
-        print("Confusion Matrix:")
-        print(cm)
-
-        # Optionally, you can format it nicely:
-        tn, fp, fn, tp = cm.ravel()
-        print(f"True Negatives:  {tn}")
-        print(f"False Positives: {fp}")
-        print(f"False Negatives: {fn}")
-        print(f"True Positives:  {tp}")
 
         return accuracy, precision, recall, f_score
