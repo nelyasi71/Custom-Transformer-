@@ -236,16 +236,16 @@ class MYDATASegLoader(object):
     def __getitem__(self, index):
         index = index * self.step
         if self.mode == "train":
-            return np.float32(self.train[index:index + self.win_size]), np.float32(self.test_labels[0:self.win_size])
+            return np.float32(self.train[index:index + self.win_size]), np.float32(self.test_labels[index:index:self.win_size])
         elif (self.mode == 'val'):
-            return np.float32(self.val[index:index + self.win_size]), np.float32(self.test_labels[0:self.win_size])
+            return np.float32(self.val[index:index + self.win_size]), np.float32(self.test_labels[index:index:self.win_size])
         elif (self.mode == 'test'):
             return np.float32(self.test[index:index + self.win_size]), np.float32(
                 self.test_labels[index:index + self.win_size])
-        else:
-            return np.float32(self.test[
-                              index // self.step * self.win_size:index // self.step * self.win_size + self.win_size]), np.float32(
-                self.test_labels[index // self.step * self.win_size:index // self.step * self.win_size + self.win_size])
+        # else:
+        #     return np.float32(self.test[
+        #                       index // self.step * self.win_size:index // self.step * self.win_size + self.win_size]), np.float32(
+        #         self.test_labels[index // self.step * self.win_size:index // self.step * self.win_size + self.win_size])
                               
 def get_loader_segment(data_path, batch_size, win_size=100, step=100, mode='train', dataset='KDD',drop_last=True):
     if (dataset == 'SMD'):
