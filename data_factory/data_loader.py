@@ -238,7 +238,7 @@ class MYDATASegLoader(object):
 
         if self.mode == "train":
             window = self.train[index:index + self.win_size]
-            label = self.train_labels[index + self.win_size - 1]  # Use corresponding label
+            label = self.test_labels[index + self.win_size - 1]  # Use corresponding label
             if len(window) < self.win_size:
                 # Pad with zeros if window is too short
                 padding = np.zeros((self.win_size - len(window), window.shape[1]))
