@@ -238,7 +238,7 @@ class MYDATASegLoader(object):
 
       if self.mode == "train":
           window = self.train[index:index + self.win_size]
-          label = self.train_labels[index + self.win_size - 1]
+          label = self.test_labels[index + self.win_size - 1]
           print(f"Index: {index}, Window shape: {window.shape}")
       elif self.mode == "val":
           window = self.val[index:index + self.win_size]
