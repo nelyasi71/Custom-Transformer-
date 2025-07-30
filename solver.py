@@ -292,8 +292,11 @@ class Solver(object):
         # (3) evaluation on the test set
         test_labels = []
         attens_energy = []
+        test_inputs = []
+
         for i, (input_data, labels) in enumerate(self.thre_loader):
             input = input_data.float().to(self.device)
+            test_inputs.append(input_data.detach().cpu().numpy())
             output, series, prior, _ = self.model(input)
 
             loss = torch.mean(criterion(input, output), dim=-1)
@@ -324,6 +327,7 @@ class Solver(object):
             attens_energy.append(cri)
             test_labels.append(labels)
 
+        test_inputs = np.concatenate(test_inputs, axis=0)
         attens_energy = np.concatenate(attens_energy, axis=0).reshape(-1)
         test_labels = np.concatenate(test_labels, axis=0).reshape(-1)
         test_energy = np.array(attens_energy)
@@ -335,6 +339,19 @@ class Solver(object):
 
         print("pred:   ", pred.shape)
         print("gt:     ", gt.shape)
+        # Step: Analyze false negatives (actual = 1, predicted = 0)
+        false_negatives_idx = np.where((gt == 1) & (pred == 0))[0]
+        print(f"False Negatives: {len(false_negatives_idx)}")
+
+        # Optional: Save or examine corresponding anomaly scores
+        fn_scores = test_energy[false_negatives_idx]
+        print("False Negative Scores (top 10):", sorted(fn_scores)[-10:])
+
+        # Optional: Save or inspect corresponding inputs (you need to store them in test_inputs earlier!)
+        if 'test_inputs' in locals():
+            false_negatives = test_inputs[false_negatives_idx]
+            print("Sample false negative input (reshaped):")
+            print(false_negatives[0])
 
         # detection adjustment: please see this issue for more information https://github.com/thuml/Anomaly-Transformer/issues/14
         anomaly_state = False
@@ -372,5 +389,5 @@ class Solver(object):
             "Accuracy : {:0.4f}, Precision : {:0.4f}, Recall : {:0.4f}, F-score : {:0.4f} ".format(
                 accuracy, precision,
                 recall, f_score))
-
+-
         return accuracy, precision, recall, f_score
