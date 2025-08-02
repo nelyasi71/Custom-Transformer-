@@ -411,5 +411,30 @@ class Solver(object):
             "Accuracy : {:0.4f}, Precision : {:0.4f}, Recall : {:0.4f}, F-score : {:0.4f} ".format(
                 accuracy, precision,
                 recall, f_score))
+        import matplotlib.pyplot as plt
 
+        # Choose the feature to plot (e.g., feature index 0)
+        feature_index = 0
+        time_series = test_inputs[:, feature_index]
+        
+        plt.figure(figsize=(15, 5))
+        plt.plot(time_series, label='Time Series', color='blue')
+        
+        # Mark ground truth anomalies
+        gt_anomalies = np.where(gt == 1)[0]
+        plt.scatter(gt_anomalies, time_series[gt_anomalies], color='red', marker='x', label='Ground Truth Anomalies')
+        
+        # Mark predicted anomalies
+        pred_anomalies = np.where(pred == 1)[0]
+        plt.scatter(pred_anomalies, time_series[pred_anomalies], color='green', marker='o', facecolors='none', label='Detected Anomalies')
+        
+        plt.legend()
+        plt.title('Anomaly Detection Results')
+        plt.xlabel('Timestep')
+        plt.ylabel('Feature Value')
+        plt.grid(True)
+        plt.tight_layout()
+        plt.savefig("detected_anomalies_plot.png")
+        plt.show()
+        
         return accuracy, precision, recall, f_score
