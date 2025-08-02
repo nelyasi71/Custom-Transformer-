@@ -432,5 +432,15 @@ class Solver(object):
         plt.tight_layout()
         plt.savefig("anomaly_detection_visualization.png")
         plt.show()
-
+        
+        from sklearn.metrics import precision_recall_fscore_support
+        from sklearn.metrics import accuracy_score
+        accuracy = accuracy_score(gt, pred)
+        precision, recall, f_score, support = precision_recall_fscore_support(gt, pred,
+                                                                              average='binary')
+        print(
+            "Accuracy : {:0.4f}, Precision : {:0.4f}, Recall : {:0.4f}, F-score : {:0.4f} ".format(
+                accuracy, precision,
+                recall, f_score))
+        
         return accuracy, precision, recall, f_score
