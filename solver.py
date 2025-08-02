@@ -8,7 +8,7 @@ from utils.utils import *
 from model.AnomalyTransformer import AnomalyTransformer
 from data_factory.data_loader import get_loader_segment
 import matplotlib.pyplot as plt
-
+import pandas as pd
 
 def my_kl_loss(p, q):
     res = p * (torch.log(p + 0.0001) - torch.log(q + 0.0001))
@@ -350,7 +350,20 @@ class Solver(object):
         test_energy = np.array(attens_energy)
         test_labels = np.array(test_labels)
         
-        
+        df_results = pd.DataFrame({
+            'anomaly_score': test_energy,
+            'ground_truth': test_labels,
+            'predicted': (test_energy > thresh).astype(int)
+        })
+
+        # Add input features to DataFrame (assuming test_inputs has multiple features)
+        for i in range(test_inputs.shape[-1]):
+            df_results[f'feature_{i}'] = test_inputs[:, i]
+
+        # Save DataFrame to CSV
+        output_path = os.path.join(self.model_save_path, f'{self.dataset}_anomaly_results.csv')
+        df_results.to_csv(output_path, index=False)
+        print(f"Anomaly results saved to {output_path}")
 
 
         plt.hist(combined_energy, bins=100, alpha=0.7, label='Score Distribution')
