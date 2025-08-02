@@ -206,7 +206,7 @@ class Solver(object):
                 print("Early stopping")
                 break
             adjust_learning_rate(self.optimizer, epoch + 1, self.lr)
-        
+        print("satrt to plot loss curve")
         plt.figure(figsize=(10, 5))
         plt.plot(train_losses, label='Train Loss', color='blue')
         plt.plot(val_losses, label='Validation Loss', color='orange')
