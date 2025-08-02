@@ -438,27 +438,6 @@ class Solver(object):
         gt_indices = np.where(gt == 1)[0]
         pred_indices = np.where(pred == 1)[0]
 
-        plt.figure(figsize=(15, 6))
-        plt.plot(time_series, label='Time Series', color='blue')
-
-        # Plot ground-truth anomalies as green circles (○)
-        plt.scatter(gt_indices, time_series[gt_indices],
-                    color='green', s=60, label='Ground Truth Anomalies',
-                    facecolors='none', edgecolors='green', marker='o')
-
-        # Plot predicted anomalies as red Xs (✗)
-        plt.scatter(pred_indices, time_series[pred_indices],
-                    color='red', s=60, label='Detected Anomalies',
-                    marker='x')
-
-        plt.title("Anomaly Detection Result")
-        plt.xlabel("Time Step")
-        plt.ylabel("Feature Value")
-        plt.legend()
-        plt.grid(True)
-        plt.tight_layout()
-        plt.savefig("anomaly_detection_visualization.png")
-        plt.show()
         
         from sklearn.metrics import precision_recall_fscore_support
         from sklearn.metrics import accuracy_score
