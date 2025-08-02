@@ -335,6 +335,8 @@ class Solver(object):
         test_labels = np.concatenate(test_labels, axis=0).reshape(-1)
         test_energy = np.array(attens_energy)
         test_labels = np.array(test_labels)
+        
+        
 
 
         plt.hist(combined_energy, bins=100, alpha=0.7, label='Score Distribution')
@@ -342,10 +344,20 @@ class Solver(object):
         plt.axvline(thresh, color='r', linestyle='--', label=f'Threshold ({thresh:.4e})')
 
         plt.title("Anomaly Score Distribution & Threshold")
-        plt.show()
+        plt.savefig("anomaly_plot.png")     
         pred = (test_energy > thresh).astype(int)
 
         gt = test_labels.astype(int)
+
+        detected_anomalies = np.sum(pred)
+        print("Detected anomalies:", detected_anomalies)
+        total_true_anomalies = np.sum(test_labels)
+        print("True anomalies in test set:", total_true_anomalies)
+        false_negatives = np.sum((pred == 0) & (test_labels == 1))
+        print("Missed anomalies (False Negatives):", false_negatives)
+        false_positives = np.sum((pred == 1) & (test_labels == 0))
+        print("False alarms (False Positives):", false_positives)
+
 
         print("pred:   ", pred.shape)
         print("gt:     ", gt.shape)
