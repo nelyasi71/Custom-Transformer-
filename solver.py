@@ -361,7 +361,7 @@ class Solver(object):
             df_results[f'feature_{i}'] = test_inputs[:, i]
 
         # Save DataFrame to CSV
-        output_path = os.path.join(self.model_save_path, f'{self.dataset}_anomaly_results.csv')
+        output_path = os.path.join('content', f'{self.dataset}_anomaly_results.csv')
         df_results.to_csv(output_path, index=False)
         print(f"Anomaly results saved to {output_path}")
 
