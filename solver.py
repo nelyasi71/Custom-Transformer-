@@ -7,6 +7,7 @@ import time
 from utils.utils import *
 from model.AnomalyTransformer import AnomalyTransformer
 from data_factory.data_loader import get_loader_segment
+import matplotlib.pyplot as plt
 
 
 def my_kl_loss(p, q):
@@ -335,6 +336,13 @@ class Solver(object):
         test_energy = np.array(attens_energy)
         test_labels = np.array(test_labels)
 
+
+        plt.hist(combined_energy, bins=100, alpha=0.7, label='Score Distribution')
+        plt.legend()
+        plt.axvline(thresh, color='r', linestyle='--', label=f'Threshold ({thresh:.4e})')
+
+        plt.title("Anomaly Score Distribution & Threshold")
+        plt.show()
         pred = (test_energy > thresh).astype(int)
 
         gt = test_labels.astype(int)
