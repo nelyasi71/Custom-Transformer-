@@ -139,7 +139,8 @@ class Solver(object):
             os.makedirs(path)
         early_stopping = EarlyStopping(patience=3, verbose=True, dataset_name=self.dataset)
         train_steps = len(self.train_loader)
-
+        train_losses = []
+        val_losses = []
         for epoch in range(self.num_epochs):
             iter_count = 0
             loss1_list = []
@@ -194,9 +195,9 @@ class Solver(object):
 
             print("Epoch: {} cost time: {}".format(epoch + 1, time.time() - epoch_time))
             train_loss = np.average(loss1_list)
-
+            train_losses.append(train_loss)
             vali_loss1, vali_loss2 = self.vali(self.test_loader)
-
+            val_losses.append(vali_loss1)
             print(
                 "Epoch: {0}, Steps: {1} | Train Loss: {2:.7f} Vali Loss: {3:.7f} ".format(
                     epoch + 1, train_steps, train_loss, vali_loss1))
@@ -205,6 +206,19 @@ class Solver(object):
                 print("Early stopping")
                 break
             adjust_learning_rate(self.optimizer, epoch + 1, self.lr)
+        
+        plt.figure(figsize=(10, 5))
+        plt.plot(train_losses, label='Train Loss', color='blue')
+        plt.plot(val_losses, label='Validation Loss', color='orange')
+        plt.xlabel('Epoch')
+        plt.ylabel('Loss')
+        plt.title('Training vs. Validation Loss')
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+        plt.savefig("loss_curve.png")
+        plt.show()
+
 
     def test(self):
         self.model.load_state_dict(
