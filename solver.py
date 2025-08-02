@@ -402,38 +402,35 @@ class Solver(object):
         print("pred: ", pred.shape)
         print("gt:   ", gt.shape)
 
-        from sklearn.metrics import precision_recall_fscore_support
-        from sklearn.metrics import accuracy_score
-        accuracy = accuracy_score(gt, pred)
-        precision, recall, f_score, support = precision_recall_fscore_support(gt, pred,
-                                                                              average='binary')
-        print(
-            "Accuracy : {:0.4f}, Precision : {:0.4f}, Recall : {:0.4f}, F-score : {:0.4f} ".format(
-                accuracy, precision,
-                recall, f_score))
-
-        # Choose the feature to plot (e.g., feature index 0)
+        
+        # Choose one feature index to plot (e.g., first feature)
         feature_index = 0
         time_series = test_inputs[:, feature_index]
 
-        plt.figure(figsize=(15, 5))
+        # Get indices for ground truth and predicted anomalies
+        gt_indices = np.where(gt == 1)[0]
+        pred_indices = np.where(pred == 1)[0]
+
+        plt.figure(figsize=(15, 6))
         plt.plot(time_series, label='Time Series', color='blue')
 
-        # Mark ground truth anomalies
-        gt_anomalies = np.where(gt == 1)[0]
-        plt.scatter(gt_anomalies, time_series[gt_anomalies], color='red', marker='x', label='Ground Truth Anomalies')
+        # Plot ground-truth anomalies as green circles (○)
+        plt.scatter(gt_indices, time_series[gt_indices],
+                    color='green', s=60, label='Ground Truth Anomalies',
+                    facecolors='none', edgecolors='green', marker='o')
 
-        # Mark predicted anomalies
-        pred_anomalies = np.where(pred == 1)[0]
-        plt.scatter(pred_anomalies, time_series[pred_anomalies], color='green', marker='o', facecolors='none', label='Detected Anomalies')
+        # Plot predicted anomalies as red Xs (✗)
+        plt.scatter(pred_indices, time_series[pred_indices],
+                    color='red', s=60, label='Detected Anomalies',
+                    marker='x')
 
+        plt.title("Anomaly Detection Result")
+        plt.xlabel("Time Step")
+        plt.ylabel("Feature Value")
         plt.legend()
-        plt.title('Anomaly Detection Results')
-        plt.xlabel('Timestep')
-        plt.ylabel('Feature Value')
         plt.grid(True)
         plt.tight_layout()
-        plt.savefig("detected_anomalies_plot.png")
+        plt.savefig("anomaly_detection_visualization.png")
         plt.show()
 
         return accuracy, precision, recall, f_score
