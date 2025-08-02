@@ -124,8 +124,8 @@ class Solver(object):
             prior_loss = prior_loss / len(prior)
 
             rec_loss = self.criterion(output, input)
-            loss_1.append((rec_loss - self.k * series_loss).item())
-            loss_2.append((rec_loss + self.k * prior_loss).item())
+            loss_1.append((max(0,rec_loss - self.k * series_loss)).item())
+            loss_2.append((max(0,rec_loss + self.k * series_loss)).item())
 
         return np.average(loss_1), np.average(loss_2)
 
@@ -178,8 +178,8 @@ class Solver(object):
                 rec_loss = self.criterion(output, input)
 
                 loss1_list.append((rec_loss - self.k * series_loss).item())
-                loss1 = rec_loss - self.k * series_loss
-                loss2 = rec_loss + self.k * prior_loss
+                loss1 = max(0,rec_loss - self.k * series_loss)
+                loss2 = max(0,rec_loss + self.k * prior_loss)
 
                 if (i + 1) % 100 == 0:
                     speed = (time.time() - time_now) / iter_count
