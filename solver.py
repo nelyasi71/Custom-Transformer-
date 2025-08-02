@@ -177,10 +177,9 @@ class Solver(object):
 
                 rec_loss = self.criterion(output, input)
 
-                loss1_list.append((rec_loss - self.k * series_loss).item())
-                loss1 = max(0,rec_loss - self.k * series_loss)
-                loss2 = max(0,rec_loss + self.k * prior_loss)
-
+                loss1 = max(torch.tensor(0.0, device=self.device), rec_loss - self.k * series_loss)  # Ensure tensor and non-negative
+                loss2 = max(torch.tensor(0.0, device=self.device), rec_loss + self.k * prior_loss)  # Ensure tensor and non-negative
+                loss1_list.append(loss1.item())  # Store scalar for averaging
                 if (i + 1) % 100 == 0:
                     speed = (time.time() - time_now) / iter_count
                     left_time = speed * ((self.num_epochs - epoch) * train_steps - i)
