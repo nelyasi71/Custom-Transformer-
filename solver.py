@@ -366,12 +366,12 @@ class Solver(object):
         print(f"Anomaly results saved to {output_path}")
 
 
-        plt.hist(combined_energy, bins=100, alpha=0.7, label='Score Distribution')
-        plt.legend()
-        plt.axvline(thresh, color='r', linestyle='--', label=f'Threshold ({thresh:.4e})')
+        # plt.hist(combined_energy, bins=100, alpha=0.7, label='Score Distribution')
+        # plt.legend()
+        # plt.axvline(thresh, color='r', linestyle='--', label=f'Threshold ({thresh:.4e})')
 
-        plt.title("Anomaly Score Distribution & Threshold")
-        plt.savefig("anomaly_plot.png")     
+        # plt.title("Anomaly Score Distribution & Threshold")
+        # plt.savefig("anomaly_plot.png")     
         pred = (test_energy > thresh).astype(int)
 
         gt = test_labels.astype(int)
